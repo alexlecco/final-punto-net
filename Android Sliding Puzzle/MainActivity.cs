@@ -22,6 +22,8 @@ namespace Android_Sliding_Puzzle
         ArrayList tilesArr;
         ArrayList coordsArr;
 
+        Point emptySpot;
+
         #endregion
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -48,7 +50,7 @@ namespace Android_Sliding_Puzzle
             {
                 for (int v = 0; v < 4; v++)
                 {
-                    TextView textTile = new TextView(this);
+                    MyTextView textTile = new MyTextView(this);
 
                     GridLayout.Spec rowSpec = GridLayout.InvokeSpec(h);
                     GridLayout.Spec colSpec = GridLayout.InvokeSpec(v);
@@ -65,10 +67,16 @@ namespace Android_Sliding_Puzzle
                     tileLayoutParams.SetMargins(5, 5, 5, 5);
 
                     textTile.LayoutParameters = tileLayoutParams;
-                    textTile.SetBackgroundColor(Color.Green);
+                    textTile.SetBackgroundColor(Color.LightGreen);
 
                     Point thisLoc = new Point(v, h);
                     coordsArr.Add(thisLoc);
+
+                    textTile.xPos = thisLoc.X;
+                    textTile.yPos = thisLoc.Y;
+
+                    textTile.Touch += TextTile_Touch;
+
                     tilesArr.Add(textTile);
 
                     mainLayout.AddView(textTile);
@@ -77,8 +85,23 @@ namespace Android_Sliding_Puzzle
                 }
             }
 
-            mainLayout.RemoveView((TextView) tilesArr[15]);
+            mainLayout.RemoveView((MyTextView) tilesArr[15]);
             tilesArr.RemoveAt(15);
+        }
+
+        void TextTile_Touch(object sender, View.TouchEventArgs e)
+        {
+            if(e.Event.Action == MotionEventActions.Up)
+            {
+                if(tilesArr.Contains(sender))
+                {
+                    MyTextView thisTile = (MyTextView) sender;
+
+                    Console.WriteLine("Tile Position X:{0} -- Y:{1}", thisTile.xPos, thisTile.yPos);
+                    Console.WriteLine("Empty Position X:{0} -- Y:{1}", emptySpot.X, emptySpot.Y);
+
+                }
+            }
         }
 
         private void randomizeMethod()
@@ -87,7 +110,7 @@ namespace Android_Sliding_Puzzle
 
             Random myRand = new Random();
 
-            foreach(TextView any in tilesArr)
+            foreach (MyTextView any in tilesArr)
             {
                 int randIndex = myRand.Next(0, tempCoords.Count);
                 Point thisRandLoc = (Point) tempCoords[randIndex];
@@ -97,6 +120,9 @@ namespace Android_Sliding_Puzzle
 
                 GridLayout.LayoutParams randLayoutParam = new GridLayout.LayoutParams(rowSpec, colSpec);
 
+                any.xPos = thisRandLoc.X;
+                any.yPos = thisRandLoc.Y;
+
                 randLayoutParam.Width = tileWidth - 10;
                 randLayoutParam.Height= tileWidth - 10;
                 randLayoutParam.SetMargins(5, 5, 5, 5);
@@ -105,6 +131,7 @@ namespace Android_Sliding_Puzzle
 
                 tempCoords.RemoveAt(randIndex);
             }
+            emptySpot = (Point) tempCoords[0];
         }
 
         private void setGameView()
@@ -127,6 +154,19 @@ namespace Android_Sliding_Puzzle
         {
             randomizeMethod();
         }
+    }
+
+    class MyTextView : TextView
+    {
+        Activity myContext;
+
+        public MyTextView(Activity context) : base(context)
+        {
+            myContext = context;
+        }
+
+        public int xPos { set; get; }
+        public int yPos { set; get; }
     }
 }
 
