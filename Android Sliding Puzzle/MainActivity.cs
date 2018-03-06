@@ -100,6 +100,34 @@ namespace Android_Sliding_Puzzle
                     Console.WriteLine("Tile Position X:{0} -- Y:{1}", thisTile.xPos, thisTile.yPos);
                     Console.WriteLine("Empty Position X:{0} -- Y:{1}", emptySpot.X, emptySpot.Y);
 
+                    float xDif = (float) Math.Pow(thisTile.xPos - emptySpot.X, 2);
+                    float yDif = (float)Math.Pow(thisTile.yPos - emptySpot.Y,2);
+
+                    float dist = (float) Math.Sqrt(xDif + yDif);
+
+                    if(dist == 1) // si es verdadero, puede mover
+                    {
+                        // memoriza donde estaba el tile
+                        Point curPoint = new Point(thisTile.xPos, thisTile.yPos);
+
+                        // mueve el tile al lugar vacio
+                        GridLayout.Spec rowSpec = GridLayout.InvokeSpec(emptySpot.Y);
+                        GridLayout.Spec colSpec = GridLayout.InvokeSpec(emptySpot.X);
+
+                        GridLayout.LayoutParams newLocParams = new GridLayout.LayoutParams(rowSpec, colSpec);
+
+                        thisTile.xPos = emptySpot.X;
+                        thisTile.yPos = emptySpot.Y;
+
+                        newLocParams.Width = tileWidth - 10;
+                        newLocParams.Height = tileWidth - 10;
+                        newLocParams.SetMargins(5, 5, 5, 5);
+
+                        thisTile.LayoutParameters = newLocParams;
+
+                        // el vacio se mueve donde estaba el tile que tocamos
+                        emptySpot = curPoint;
+                    }
                 }
             }
         }
