@@ -32,6 +32,8 @@ namespace Android_Sliding_Puzzle
             setGameView();
 
             makeTilesMethod();
+
+            randomizeMethod();
         }
 
         private void makeTilesMethod()
@@ -79,6 +81,32 @@ namespace Android_Sliding_Puzzle
             tilesArr.RemoveAt(15);
         }
 
+        private void randomizeMethod()
+        {
+            ArrayList tempCoords = new ArrayList(coordsArr);
+
+            Random myRand = new Random();
+
+            foreach(TextView any in tilesArr)
+            {
+                int randIndex = myRand.Next(0, tempCoords.Count);
+                Point thisRandLoc = (Point) tempCoords[randIndex];
+
+                GridLayout.Spec rowSpec = GridLayout.InvokeSpec(thisRandLoc.Y);
+                GridLayout.Spec colSpec = GridLayout.InvokeSpec(thisRandLoc.X);
+
+                GridLayout.LayoutParams randLayoutParam = new GridLayout.LayoutParams(rowSpec, colSpec);
+
+                randLayoutParam.Width = tileWidth - 10;
+                randLayoutParam.Height= tileWidth - 10;
+                randLayoutParam.SetMargins(5, 5, 5, 5);
+
+                any.LayoutParameters = randLayoutParam;
+
+                tempCoords.RemoveAt(randIndex);
+            }
+        }
+
         private void setGameView()
         { 
             resetButton = FindViewById<Button>(Resource.Id.resetButtonId);
@@ -97,7 +125,7 @@ namespace Android_Sliding_Puzzle
         
         void resetMethod(object sender, EventArgs e)
         {
-            
+            randomizeMethod();
         }
     }
 }
