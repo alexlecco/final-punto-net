@@ -4,6 +4,7 @@ using Android.OS;
 using Android.Graphics;
 using System;
 using Android.Views;
+using System.Collections;
 
 namespace Android_Sliding_Puzzle
 {
@@ -17,6 +18,9 @@ namespace Android_Sliding_Puzzle
 
         int gameViewWidth;
         int tileWidth;
+
+        ArrayList tilesArr;
+        ArrayList coordsArr;
 
         #endregion
 
@@ -33,6 +37,9 @@ namespace Android_Sliding_Puzzle
         private void makeTilesMethod()
         {
             tileWidth = gameViewWidth / 4;
+
+            tilesArr = new ArrayList();
+            coordsArr = new ArrayList();
 
             int counter = 1;
             for (int h = 0; h < 4; h++)
@@ -58,12 +65,18 @@ namespace Android_Sliding_Puzzle
                     textTile.LayoutParameters = tileLayoutParams;
                     textTile.SetBackgroundColor(Color.Green);
 
+                    Point thisLoc = new Point(v, h);
+                    coordsArr.Add(thisLoc);
+                    tilesArr.Add(textTile);
+
                     mainLayout.AddView(textTile);
 
                     counter++;
                 }
             }
-            
+
+            mainLayout.RemoveView((TextView) tilesArr[15]);
+            tilesArr.RemoveAt(15);
         }
 
         private void setGameView()
